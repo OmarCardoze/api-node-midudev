@@ -27,7 +27,7 @@ app.get('/api/notes/:id', (req, res, next) => {
 
   Note.findById(id)
     .then(note => {
-      if(note) return res.json(note)
+      if (note) return res.json(note)
       res.status(404).end()
     })
     .catch(error => next(error))
@@ -42,7 +42,7 @@ app.put('/api/notes/:id', (req, res, next) => {
     important: note.important
   }
 
-  Note.findByIdAndUpdate(id, newNoteInfo, {new: true})
+  Note.findByIdAndUpdate(id, newNoteInfo, { new: true })
     .then(result => {
       res.json(result)
     })
@@ -83,6 +83,8 @@ app.use(handleError)
 
 const PORT = process.env.PORT || 3001
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${PORT}`)
 })
+
+module.exports = { app, server }

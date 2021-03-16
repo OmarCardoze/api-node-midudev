@@ -1,6 +1,6 @@
 
-//los schemas se hace para tener un modelo de los datos que se guardan 
-// doc: https://mongoosejs.com/docs/guide.html#definition
+//Los schemas se hace para tener un modelo de los datos que se guardan 
+// Doc oficial =>: https://mongoosejs.com/docs/guide.html#definition
 
 const { Schema, model } = require('mongoose')
 
@@ -11,7 +11,8 @@ const noteSchema = new Schema({
 })
 
 
-// por defecto se guarda el id así => _id y agrega tambien el __v y con esto se elimina
+// por defecto se guarda el id así => _id y agrega tambien el __v y con esto se elimina aquí pero no en la DB
+
 noteSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id
