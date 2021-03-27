@@ -3,11 +3,11 @@ require('dotenv').config()
 
 const express = require('express')
 const cors = require('cors')
-const { response } = require('express')
 const app = express()
 const Note = require('./model/Note')
 const notFound = require('./middleware/notFound')
 const handleError = require('./middleware/handleError')
+const userRouter = require('./controllers/users')
 
 app.use(cors())
 app.use(express.json())
@@ -16,10 +16,9 @@ app.get('/', (req, res) => {
   res.send('Esta es un api para mostrar notas')
 })
 
-app.get('/api/notes', (req, res) => {
-  Note.find({}).then(notes => {
-    res.json(notes)
-  })
+app.get('/api/notes', async (req, res) => {
+  const notes = await Note.find({})
+  res.json(notes)
 })
 
 app.get('/api/notes/:id', (req, res, next) => {
@@ -50,15 +49,16 @@ app.put('/api/notes/:id', (req, res, next) => {
 
 })
 
-app.delete('/api/notes/:id', (req, res, next) => {
+app.delete('/api/notes/:id', async (req, res, next) => {
   const { id } = req.params
 
-  Note.findByIdAndDelete(id)
-    .then(() => res.status(204).end)
-    .catch(next)
+  const result = await Note.findByIdAndDelete(id)
+  if (result === null) return res.sendStatus(404)
+
+  res.status(204).end()
 })
 
-app.post('/api/notes', (req, res, next) => {
+app.post('/api/notes', async (req, res, next) => {
   const note = req.body
   console.log(note);
   if (!note.content) {
@@ -73,13 +73,19 @@ app.post('/api/notes', (req, res, next) => {
     important: note.important || false
   })
 
-  newNote.save().then(savedNote => {
-    res.json(savedNote)
-  }).catch(err => next(err))
+  try {
+    const saveNote = await newNote.save()
+    res.json(saveNote)
+  } catch (error) {
+    next(error)
+  }
 })
+
+app.use('/api/users', userRouter)
 
 app.use(notFound)
 app.use(handleError)
+
 
 const PORT = process.env.PORT || 3001
 
