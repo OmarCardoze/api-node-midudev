@@ -5,6 +5,7 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const Note = require('./model/Note')
+const User = require('./model/User')
 const notFound = require('./middleware/notFound')
 const handleError = require('./middleware/handleError')
 const userRouter = require('./controllers/users')
@@ -17,7 +18,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/notes', async (req, res) => {
-  const notes = await Note.find({})
+  const notes = await Note.find({}).populate('user', {
+    username: 1,
+    name: 1
+  })
   res.json(notes)
 })
 
@@ -59,23 +63,36 @@ app.delete('/api/notes/:id', async (req, res, next) => {
 })
 
 app.post('/api/notes', async (req, res, next) => {
-  const note = req.body
-  console.log(note);
-  if (!note.content) {
+  const {
+    content,
+    important = false, 
+    userId
+  } = req.body
+
+  const user = await User.findById(userId)
+
+  console.log(content);
+  if (!content) {
     return res.status(400).json({
       error: 'required "content" field is missing'
     })
   }
 
   const newNote = new Note({
-    content: note.content,
+    content,
     date: new Date(),
-    important: note.important || false
+    important,
+    user: user.id
   })
 
   try {
-    const saveNote = await newNote.save()
-    res.json(saveNote)
+    const savedNote = await newNote.save()
+
+    // esta forma solo funciona con mongoose y no con mongodb
+    user.notes = user.notes.concat(savedNote.id)
+    await user.save()
+
+    res.json(savedNote)
   } catch (error) {
     next(error)
   }

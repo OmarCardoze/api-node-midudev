@@ -1,12 +1,18 @@
+const uniqueValidator = require('mongoose-unique-validator')
 const { Schema, model } = require('mongoose')
 
+//mongoose-unique-validator, es para validar que solo exista un usuario
+
 const userSchema = new Schema({
-    username: String,
+    username: {
+      type: String,
+      unique: true
+    },
     name: String,
     passwordHash: String,
     notes: [{
         type: Schema.Types.ObjectId,
-        ref: 'Notes'
+        ref: 'Note'
     }]
 })
 
@@ -23,6 +29,8 @@ userSchema.set('toJSON', {
     }
   })
   
+  userSchema.plugin(uniqueValidator)
+
   const User = model('User', userSchema)
   
   module.exports = User

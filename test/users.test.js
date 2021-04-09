@@ -36,6 +36,30 @@ describe('creating new user', () => {
         expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
     })
 
+
+        test('creation fails with proper status and messaje if username is already taken', async () => {
+
+        const usersAtStart = await getUsers()
+
+        const newUser = {
+            username: 'devflix',
+            name: 'Occzmar',
+            password: '231zc23'
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(result.body.error.message).toContain('expected `username` to be unique')
+
+        const usersAtEnd = await getUsers()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+        
+    })
+
     afterAll(() => {
         server.close()
         moongose.connection.close()
