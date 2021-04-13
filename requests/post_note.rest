@@ -1,8 +1,8 @@
 POST  http://localhost:3000/api/notes
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNzRmZGQ0M2E4OWVkMDk4NGU2YWExMiIsInVzZXJuYW1lIjoiYWx4IiwiaWF0IjoxNjE4MzM3MjI1LCJleHAiOjE2MTg5NDIwMjV9.uENIcqDW3pzJqOp41m8ZtJjuq33cEj27VpwMH_hNW28
 
 {
-    "content": "Angular",
+    "content": "nueva nota de prueba",
     "important": true,
-    "userId": "606fad287847030c405e4380" 
 }
