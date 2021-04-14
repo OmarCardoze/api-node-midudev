@@ -4,14 +4,16 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const app = express()
+
 const Note = require('./model/Note')
 const User = require('./model/User')
+
 const notFound = require('./middleware/notFound')
 const handleError = require('./middleware/handleError')
 const userExtractor = require('./middleware/userExtractor')
+
 const userRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
-const { request } = require('express')
 
 app.use(cors())
 app.use(express.json())
@@ -56,7 +58,7 @@ app.put('/api/notes/:id', userExtractor, (req, res, next) => {
 
 })
 
-app.delete('/api/notes/:id',userExtractor, async (req, res, next) => {
+app.delete('/api/notes/:id', userExtractor, async (req, res, next) => {
   const { id } = req.params
 
   const result = await Note.findByIdAndDelete(id)
@@ -75,7 +77,7 @@ app.post('/api/notes', userExtractor, async (req, res, next) => {
   //doc: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication
 
   // sacar el userId del request
-  const {userId} = req
+  const { userId } = req
 
   const user = await User.findById(userId)
 

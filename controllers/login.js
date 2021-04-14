@@ -26,7 +26,7 @@ loginRouter.post('', async (req, res) => {
 
     const userForToken = {
         id: user._id,
-        username: user.username,
+        username: user.username
     }
 
     //expiresIn para la experiacion
@@ -34,7 +34,7 @@ loginRouter.post('', async (req, res) => {
         userForToken,
         process.env.SECRET,
         {
-            expiresIn: 60 * 60 * 24 * 7
+          expiresIn: 60 * 60 * 24 * 7
         }
         )
 

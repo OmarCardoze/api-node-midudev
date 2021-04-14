@@ -12,7 +12,7 @@ const ERROR_HANDLERS = {
     res.status(401).json({ error: 'token expired' }),
 
   defaultError: (res, error) => {
-    console.error(error)
+    console.error(error.stack)
     console.error(error.name)
     res.status(500).end()
   }
