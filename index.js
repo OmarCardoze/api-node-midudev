@@ -15,6 +15,7 @@ const userExtractor = require('./middleware/userExtractor')
 const userRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 
+
 app.use(cors())
 app.use(express.json())
 
@@ -110,6 +111,13 @@ app.post('/api/notes', userExtractor, async (req, res, next) => {
 
 app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
+
+// limpia la db para testing
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing')
+
+  app.use('/api/testing', testingRouter)
+}
 
 app.use(notFound)
 app.use(handleError)
